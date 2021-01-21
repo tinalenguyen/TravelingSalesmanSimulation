@@ -43,9 +43,55 @@ public class TravelingSalesman{
 		}
 		return distances;
 	}
+	public static int distanceForPermutation(ArrayList<Integer> permutation, int[][] distances) {
+		int totalDistance = 0;
+		// If we really wanted to, we could check to make sure that permutation only conatins one of each number
+		for (int i = 1; i < permutation.size(); i++) {
+			totalDistance += distances[permutation.get(i-1)][permutation.get(i)];
+		}
+		return totalDistance;
+	}
+
+	// The java compiler complains about this function but still compiles with it
+	// It has something to do with the types, but I don't know enough about Java to completely fix it...?
+	public static ArrayList[] generatePermutations(int max) {
+		// Once again, could probably use error checks
+
+		// Making a list of array lists, where each arraylist contains one permutation
+		ArrayList<Integer>[] permutations = new ArrayList[max];
+		for (int i = 0; i < max; i++) {
+			permutations[i] = new ArrayList<Integer>();
+			permutations[i].add(i);
+		}
+
+		for (int i = 1; i < max; i++) { //starting with 1 and not 0 because we already did the first round
+			// This algorithm makes the length of permutations mimic n!, in the sense that it starts as n,
+			// then becomes n * (n-1) (which is its length * (max - i))
+			// then becomes (n * (n-1)) * (n-2)
+			// and so on
+			ArrayList<Integer>[] newPermutations = new ArrayList[permutations.length * (max - i)];
+			int permIndex = 0;
+			// For each permutation...
+			for (int ii = 0; ii < permutations.length; ii++) {
+				// ...It iterates over all of the values that haven't been added yet...
+				for (int iii = 0; iii < max; iii++) {
+					if (permutations[ii].contains(iii)) continue; // Skip what has been added
+					// ...And creates new permutations for each non-added value!
+					ArrayList<Integer> newPermutation = (ArrayList<Integer>) permutations[ii].clone();
+					newPermutation.add(iii);
+					newPermutations[permIndex] = newPermutation;
+					permIndex++;
+				}
+			}
+			permutations = newPermutations;
+		}
+		return permutations;
+	}
 	public static void main(String[] args) throws FileNotFoundException { // throws is temporary here
-		// So far, main just tests the readFile function
 		int[][] distances = readFile("Input.txt");
 		System.out.println(Arrays.deepToString(distances)); // A todo could be to implement more robust checks
+
+		ArrayList<Integer>[] permutations = generatePermutations(3);
+		System.out.println(Arrays.deepToString(permutations));
 	}
 }
