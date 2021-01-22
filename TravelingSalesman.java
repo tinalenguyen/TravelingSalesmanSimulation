@@ -89,9 +89,20 @@ public class TravelingSalesman{
 	}
 	public static void main(String[] args) throws FileNotFoundException { // throws is temporary here
 		int[][] distances = readFile("Input.txt");
-		System.out.println(Arrays.deepToString(distances)); // A todo could be to implement more robust checks
+//		System.out.println(Arrays.deepToString(distances)); // A todo could be to implement more robust checks
 
-		ArrayList<Integer>[] permutations = generatePermutations(3);
-		System.out.println(Arrays.deepToString(permutations));
+		ArrayList<Integer>[] permutations = generatePermutations(distances.length);
+//		System.out.println("permutation: " + Arrays.deepToString(permutations));
+
+		int smallestDistance = Integer.MAX_VALUE;
+		for (int i = 0 ; i < permutations.length ; i++ ){
+			int temp = distanceForPermutation(permutations[i], distances);
+			if (temp < smallestDistance){
+				smallestDistance = temp;
+			}
+
+		}
+
+		System.out.println(smallestDistance);
 	}
 }
